@@ -23,6 +23,7 @@ service: sls-lambda-cloudfront
 provider:
   name: aws
   runtime: nodejs12.x
+  # If you change region, change it in the CloudFront configuration below.
   region: eu-west-1
 
 
@@ -43,18 +44,19 @@ resources:
         DistributionConfig:
           Comment: CF Distribution for APIGW-Lambda Caching
           DefaultCacheBehavior:
-            TargetOriginId: MyFirstOrigin
+            TargetOriginId: MyApiOrigin
             ViewerProtocolPolicy: 'redirect-to-https'
             DefaultTTL: 30
             ForwardedValues:
               QueryString: false
           Enabled: true
           Origins:
-            - Id: MyFirstOrigin
+            - Id: MyApiOrigin
               DomainName:
                 Fn::Join:
                   - "."
                   - - Ref: ApiGatewayRestApi
+                    # Change if you use another region
                     - execute-api.eu-west-1.amazonaws.com
               OriginPath: /dev
               CustomOriginConfig:
